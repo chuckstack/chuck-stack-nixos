@@ -3,13 +3,13 @@
 # Notes:
   # discussed in https://www.chuck-stack.org/ls/stack-architecture.html
   # get list of requests via api from localhost:
-    # curl http://localhost:3000/stk_wf_request
+    # curl http://localhost:3000/stk_request
   # add request via api from localhost:
-    # curl http://localhost:3000/stk_wf_request -X POST -H "Content-Type: application/json" -d '{"name": "do great things"}'
+    # curl http://localhost:3000/stk_request -X POST -H "Content-Type: application/json" -d '{"name": "do great things"}'
   # submit form - call to function 
     # curl http://localhost:3000/rpc/stk_form_post_fn -X POST -H "Content-Type: application/json" -d '{"name": "you know who"}'
   # get list of requests through nginx via ip -- assumes self signed (insecure)
-    # curl --insecure https://10.2.2.2/stk_wf_request
+    # curl --insecure https://10.2.2.2/stk_request
 
 let
   postgrestPort = 3000; # variable
