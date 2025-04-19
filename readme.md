@@ -53,8 +53,9 @@ Here is an example configuration.nix file. Notice that I added the lines ending 
     ./chuck-stack-nix/nixos/postgresql.nix  # here
     ./chuck-stack-nix/nixos/user.nix  # here
     ./chuck-stack-nix/nixos/stk-app.nix  # here
-    ./chuck-stack-nix/nixos/nginx.nix  # here
-    ./chuck-stack-nix/nixos/nginx-fail2ban.nix  # here
+    #./chuck-stack-nix/nixos/nginx.nix  # here if needed
+    #./chuck-stack-nix/nixos/nginx-fail2ban.nix  # here if needed
+    #./chuck-stack-nix/nixos/cloudflared.nix # here if needed
     ];
 ...
 ```
