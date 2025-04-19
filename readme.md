@@ -76,7 +76,7 @@ SSH is disabled by default in system.nix. Uncomment the system.nix => services.o
 
 ### Network Static IP
 
-If you wish to expose an instance to the outside world fron an Incus cluster, execute the following assuming your external IP is x.x.x.x/32.
+If you wish to expose an instance to the outside world from an Incus cluster, execute the following assuming your external IP is x.x.x.x/32.
 
 ```bash
 # from incus cli
@@ -94,6 +94,51 @@ Inside your container's /etc/nixos/configuration.nix, update the systemd.network
 ...
 ```
 If you run `ip a`, you should see an internal IP and the above x.x.x.x/32 external IP.
+
+
+## Managing Key-Value Pairs in NixOS with File Permissions
+
+The most simple and standard way to handle key-value pairs in NixOS while restricting visibility is to use a separate Nix file with restricted file permissions. Note this topic does not involve/include encryption.
+
+### Step 1: Create a secrets file
+
+To create isolation from the nix store, place the secrets file in a separate directory with restricted permissions:
+
+```bash
+sudo mkdir -p /etc/chuck-stack/secrets
+sudo chmod 700 /etc/chuck-stack/secrets
+sudo touch /etc/chuck-stack/secrets/keys.nix
+sudo chmod 600 /etc/chuck-stack/secrets/keys.nix
+sudo chown root:root /etc/chuck-stack/secrets/keys.nix
+```
+
+```nix
+# /etc/chuck-stack/secrets/keys.nix
+{
+  apiKey = "your-api-key";
+  dbPassword = "your-db-password";
+  # other key-value pairs
+}
+```
+
+### Step 2: Import in your configuration
+
+```nix
+# /etc/nixos/configuration.nix
+{ config, pkgs, ... }:
+
+let
+  secrets = import /etc/chuck-stack/secrets/keys.nix;
+in {
+  # Now use the values as needed
+  services.someService.apiKey = secrets.apiKey;
+  services.database.password = secrets.dbPassword;
+}
+```
+
+### Important Note
+
+Be aware that this approach only protects the file from being read directly. For true security, you would need tools like `agenix` or `sops-nix`.
 
 ##  Notes
 

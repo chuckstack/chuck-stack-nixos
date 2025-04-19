@@ -25,3 +25,8 @@
     };
   };
 }
+
+# References:
+  # https://discourse.nixos.org/t/using-cloudflared-with-zero-trust-dashboard-on-nixos/19069/7
+# Notes:
+  # ideally, --credentials-file should be used instead of --token since that token is sensitive
