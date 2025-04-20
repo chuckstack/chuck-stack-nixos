@@ -53,7 +53,7 @@ Here is an example configuration.nix file. Notice that I added the lines ending 
     ./chuck-stack-nix/nixos/postgresql.nix  # here
     ./chuck-stack-nix/nixos/user.nix  # here
     ./chuck-stack-nix/nixos/stk-app.nix  # here
-    #./chuck-stack-nix/nixos/nginx.nix  # here if needed
+    ./chuck-stack-nix/nixos/nginx.nix  # here
     #./chuck-stack-nix/nixos/nginx-fail2ban.nix  # here if needed
     #./chuck-stack-nix/nixos/cloudflared.nix # here if needed
     ];
@@ -123,6 +123,8 @@ sudo chown root:root /etc/chuck-stack/secrets/keys.nix
 
 ### Step 2: Import in your configuration
 
+Here is an example:
+
 ```nix
 # /etc/nixos/configuration.nix
 { config, pkgs, ... }:
@@ -136,9 +138,39 @@ in {
 }
 ```
 
+Here is another example copied in part from [cloudflared.nix](./nixos/cloudflared.nix):
+
+```nix
+{ config, lib, pkgs, modulesPath, ... }:
+
+let
+  # Import secrets here
+  secrets = import /etc/chuck-stack/secrets/keys.nix;
+in {
+  environment.systemPackages = with pkgs; [
+    cloudflared
+  ];
+
+  #... Lines omitted for brevity
+
+  systemd.services.my_tunnel = {
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" "systemd-resolved.service" ];
+    requires = [ "network-online.target" ];
+    serviceConfig = {
+      # Use secret here
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=${secrets.cloudflaredToken}";
+      Restart = "always";
+      User = "cloudflared";
+      Group = "cloudflared";
+    };
+  };
+}
+```
+
 ### Important Note
 
-Be aware that this approach only protects the file from being read directly. For true security, you would need tools like `agenix` or `sops-nix`.
+Be aware that this approach only protects the file from being read directly. For true security, you would need encryption-based tools like `agenix` or `sops-nix`.
 
 ##  Notes
 
