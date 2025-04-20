@@ -1,5 +1,9 @@
 { config, lib, pkgs, modulesPath, ... }:
 
+# Example: file to manage users
+
+# Example: example of how to pull/clone files from github
+# Example: get ssh public from github
 let
   chuboeKeys = pkgs.fetchFromGitHub {
     owner = "cboecking";
@@ -10,6 +14,7 @@ let
   chuboeAuthKeys = "${chuboeKeys}/id_rsa.pub";
 in
 #let
+#  # Example: alternate way to get something from github
 #  chuboeAuthKeyUrl = "https://raw.githubusercontent.com/cboecking/keys/refs/heads/main/id_rsa.pub";
 #  chuboeAuthKeys = pkgs.fetchurl {
 #    url = chuboeAuthKeyUrl;
@@ -17,6 +22,7 @@ in
 #  };
 #in
 {
+  # Example: create both interactive login and system non-login user
   users.users = {
     # Real sudo user that can log in
     chuboe = {

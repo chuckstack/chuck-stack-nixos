@@ -9,9 +9,11 @@
   # Ref: https://nixos.wiki/wiki/ACME
   # Ref: https://nixos.org/manual/nixos/stable/index.html#module-security-acme
   # Note: the below will fail to get a cert as is; however, it allows you to use ssl
+  # Note: you do not need acme if you are using a cloudflare tunnel
   # Use the following to create your first page
     # mkdir -p /var/www/blog/; echo "hello world" > /var/www/blog/index.html
 
+  # Example: ssl certification
   security.acme.acceptTerms = true;
   security.acme.defaults.email = "chuck@chuboe.com";
   services.nginx = {
@@ -29,6 +31,8 @@
         serverAliases = [ "myblog.example.com" ];
         locations = {
 
+          # Example: nginx configuration
+          # Action: update (uncomment or add) nginx paths according to your needs
           # Root "/" path
           "/" = {
             #return = "404";   # Uncomment "/" if you wish to block the root url access - openapi/swagger
@@ -63,14 +67,15 @@
     '';
   };
 
+  # Action: updated ssl acme cert for production if needed
   # staging server used for testing
   security.acme.defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
 
   environment.shellAliases = {
-    "j" = "javac"; # just an example of defining an alias within a specific config
+    "j" = "javac"; # Example: of defining an alias within a specific config
   };
 
-  # Open ports in the firewall.
+  # Example: Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 80 443 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
 }

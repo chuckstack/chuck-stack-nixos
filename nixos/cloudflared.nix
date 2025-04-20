@@ -5,11 +5,10 @@
 
 let
   # Import secrets from the file described in the readme
+  # Example: - how to reference a secrets file
   secrets = import /etc/chuck-stack/secrets/keys.nix;
 in {
   environment.systemPackages = with pkgs; [
-    # jdk17_headless
-    # maven
     cloudflared
   ];
 
@@ -24,6 +23,8 @@ in {
     after = [ "network-online.target" "systemd-resolved.service" ];
     requires = [ "network-online.target" ];
     serviceConfig = {
+      # Example: - how to extract a secret from a secrets file
+      # Action: need to create and populate the secret/key.nix file accordingly
       ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token=${secrets.cloudflaredToken}";
       Restart = "always";
       User = "cloudflared";

@@ -40,7 +40,7 @@ exit # exit nix-shell
 ```
 ## Configuration.nix
 
-Here is an example configuration.nix file. Notice that I added the lines ending in '# here'. 
+Here is an example configuration.nix file. Notice that I added the lines ending in '# here'.
 
 ```nix
 ...
@@ -60,13 +60,53 @@ Here is an example configuration.nix file. Notice that I added the lines ending 
 ...
 ```
 
+### Actions Needed
+
+Some of the services require configuration before using. Perform the following to quickly see all "# Action..." in all files:
+
+```bash
+grep -rni -C10 "Action:" /etc/nixos/chuck-stack-nix/nixos
+```
+
+To look for a specific action with a specific keyword somewhere in the same line:
+
+```bash
+grep -rni -C10 "Action:.*keyword" /etc/nixos/chuck-stack-nix/nixos
+
+```
+
+Note: -C10 shows the previous and following 10 lines
+
+### Rebuild
+
 To rebuild with the new configuration:
 ```
 nixos-rebuild switch
 ```
-If you exit from tmux and the nixos session then reconnect, your bash session will be updated with all the new tools and features.
+If you exit from your session then reconnect, your bash session will be updated with all the new tools and features.
 
-### SSH Details
+## Examples
+
+Nix is both powerful and capable as well as complex. We have tried to be consistent in how we do things. One way to promote consistency is to highlight example of how to do things.
+
+When looking for examples, always start in ./chuck-stack-nix/nixos/system.nix. It represents the most basic starting place to configure your system.
+
+Perform the following to quickly see all "# Example..." in all files:
+
+```bash
+grep -rni -A10 "Example:" /etc/nixos/chuck-stack-nix/nixos
+```
+
+To look for a specific example with a specific keyword somewhere in the same line:
+
+```bash
+grep -rni -C10 "Example:.*keyword" /etc/nixos/chuck-stack-nix/nixos
+
+```
+
+Note: -A10 shows the following (after) 10 lines
+
+## SSH Details
 
 SSH is disabled by default in system.nix. Uncomment the system.nix => services.openssh section if you wish to enable it. The reasons it is disabled by default are:
 
@@ -74,7 +114,7 @@ SSH is disabled by default in system.nix. Uncomment the system.nix => services.o
 - The NixOS default behavior is to open the ssh port firewall port when the ssh service is enagbled. To prevent this, you must explicitly disable the port in the system.nix => networking.firewall section.
 - The Incus command `incus exec instance-name bash` does not use ssh to connect; therefore, you can connect from Incus without needing the sshd services enabled.
 
-### Network Static IP
+## Network Static IP
 
 If you wish to expose an instance to the outside world from an Incus cluster, execute the following assuming your external IP is x.x.x.x/32.
 
@@ -94,7 +134,6 @@ Inside your container's /etc/nixos/configuration.nix, update the systemd.network
 ...
 ```
 If you run `ip a`, you should see an internal IP and the above x.x.x.x/32 external IP.
-
 
 ## Managing Key-Value Pairs in NixOS with File Permissions
 
@@ -172,6 +211,6 @@ in {
 
 Be aware that this approach only protects the file from being read directly. For true security, you would need encryption-based tools like `agenix` or `sops-nix`.
 
-##  Notes
+##  Other Notes
 
 Each Nix file has a section at the top for notes about the configuration and its usage

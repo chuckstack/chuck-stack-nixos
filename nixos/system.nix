@@ -2,8 +2,10 @@
 
 {
   #networking.hostName = "nixos"; # Define your hostname - might already be defined.
+  # Action: update as needed
   time.timeZone = "America/Chicago";
 
+  # Action: update as needed
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -17,28 +19,10 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Define a user account - moved to user.nix
-  #users.users.chuboe = {
-  #  isNormalUser = true;
-  #  description = "chuboe";
-  #  extraGroups = [ "networkmanager" "wheel" ];
-  #  packages = with pkgs; [
-  #  #  firefox
-  #  #  thunderbird
-  #  ];
-  #};
-
-  # should not need sudo in a nixos environment
-  # use this instead: su -c "some-command" some-user
-  #security.sudo.extraRules = [{
-  #  users = ["chuboe"];
-  #  commands = [{ command = "ALL";
-  #    options = ["NOPASSWD"];
-  #  }];
-  #}];
-
   nixpkgs.config.allowUnfree = true;
 
+  # Example: how to install system-wide packages
+  # Action: add additional packages here as needed
   environment.systemPackages = with pkgs; [
     alacritty
     cowsay
@@ -81,6 +65,7 @@
     # programs here, NOT in environment.systemPackages
   ];
 
+  # Action: updated git settings as needed
   programs.git = {
     enable = true;
     lfs.enable = true;
@@ -96,16 +81,15 @@
     };
   };
 
+  # Example: of how to create aliases
+  # Action: add aliases as needed
   environment.shellAliases = {
     "vim" = "nvim";
     "vi" = "nvim";
     "h" = "history";
   };
 
-  #programs.bash.shellInit = "
-  #source /etc/nixos/chuboe-nix/.mybash
-  #";
-
+  # make it easy to nagivate bash history by using a couple of letters and the up arrow
   environment.etc."inputrc" = {
   text = pkgs.lib.mkDefault( pkgs.lib.mkAfter ''
       #  alternate mappings for "page up" and "page down" to search the history
@@ -115,6 +99,7 @@
   };
 
   # Enable if ssh service needed 
+  # Action: update/enable ssh server as needed
   services.openssh = {
     enable = false;
     # require public key authentication for better security
@@ -125,6 +110,7 @@
 
   # Open ports in the firewall.
   # Or disable the firewall altogether.
+  # Action: update firewall as needed
   networking.firewall = {
     enable = true;
     allowPing = false;
@@ -134,5 +120,4 @@
       # add stuff here
     #''
   };
-
 }

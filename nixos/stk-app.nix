@@ -12,9 +12,10 @@
     # curl --insecure https://10.2.2.2/stk_request
 
 let
-  postgrestPort = 3000; # variable
+  postgrestPort = 3000; # Example: variable
   postgresUser = "postgrest";
   postgresDb = "stk_db";
+  # Example: bash/bin script for service
   run-migrations = pkgs.writeScriptBin "run-migrations" ''
     #!${pkgs.bash}/bin/bash
     set -e
@@ -54,6 +55,7 @@ in
     #];
     # This will set the owner of the database after it's created
     # Note: this section needs stay in sync with stk-app-sql => test => shell.nix
+    # Example: of a sql script that is only run once
     initialScript = pkgs.writeText "stk-init.sql" ''
       CREATE ROLE stk_superuser LOGIN CREATEROLE; 
       COMMENT ON ROLE stk_superuser IS 'superuser role to administer the stk_db database';
@@ -63,6 +65,7 @@ in
 
   environment.systemPackages = [ run-migrations pkgs.git pkgs.sqlx-cli ];
 
+  # Action: to re-run migrations, simply restart this service
   systemd.services.stk-db-migrations = {
     description = "Clone migration repo and run database migrations";
     after = [ "postgresql.service" ];
@@ -76,6 +79,7 @@ in
 
   users.users = {
     # Service user without login capabilities
+    # Example: of a system user for a service
     postgrest = {
       isSystemUser = true;
       group = "postgrest";
@@ -96,7 +100,6 @@ in
       home = "/var/lib/stk_superuser";
       createHome = true;
       shell = pkgs.bashInteractive;  # or pkgs.nologin if you want to prevent interactive login
-
     };
   };
 
@@ -105,6 +108,7 @@ in
   users.groups.stk_superuser = {};
 
   # Create Postgrest configuration file directly in the Nix configuration
+  # Example: creating a configuration file for services located in /etc
   environment.etc."postgrest.conf" = {
     text = ''
       db-uri = "postgres://${postgresUser}@/${postgresDb}?host=/run/postgresql"
@@ -120,12 +124,14 @@ in
 
   };
 
+  # Example: of how to run a script upon activation
   system.activationScripts = {
     postgrestConf = ''
       chown postgrest:postgrest /etc/postgrest.conf
     '';
   };
 
+  # Example: systemd service configuration file
   systemd.services.postgrest = {
     description = "PostgREST Service";
     after = [ "network.target" "postgresql.service" "stk-db-migrations.service" ];
