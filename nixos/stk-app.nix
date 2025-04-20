@@ -78,6 +78,18 @@ in
     };
   };
 
+  # Example: showing how to apply bash settings to all users
+  programs.bash = {
+    shellInit = ''
+      # Code to run for all users
+    '';
+    interactiveShellInit = ''
+      # Code to run for all interactive shells
+      export PGDATABASE=stk_db
+      #alias ll='ls -la'
+    '';
+  };
+
   users.users = {
     # Service user without login capabilities
     # Example: of a system user for a service
