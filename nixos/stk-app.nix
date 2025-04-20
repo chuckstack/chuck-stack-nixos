@@ -78,6 +78,36 @@ in
     };
   };
 
+  # create a global .psqlrc
+  environment.etc.".psqlrc" = {
+    text = ''
+      \set datetag `date +'%F_%H-%M-%S'`
+      \set QUIET 1
+      \set PROMPT1 '%[%033[1m%]%M %n@%/%R%[%033[0m%]%# '
+      \set PROMPT2 '[more] %R > '
+      \pset null '[NULL]'
+      \x auto
+      \set VERBOSITY verbose
+      \set HISTFILE .psql_history
+      \set HISTCONTROL ignoredups
+      \set COMP_KEYWORD_CASE upper
+      \set PSQL_EDITOR ${pkgs.neovim}/bin/nvim
+      \set EDITOR ${pkgs.neovim}/bin/nvim
+      \set VISUAL ${pkgs.neovim}/bin/nvim
+      \set ON_ERROR_ROLLBACK interactive
+      \set HISTSIZE 5000
+
+      --TODO: need to figure out a good strategy for the following
+          --until then, just comment them out
+      --\set STK_PG_ROLE `echo $STK_PG_ROLE`
+      --SET ROLE :STK_PG_ROLE;
+
+      --\set STK_PG_SESSION `echo $STK_PG_SESSION`
+      --SET stk.session = :STK_PG_SESSION;
+    '';
+    mode = "0644";  # everyone can read
+  };
+
   # Example: showing how to apply bash settings to all users
   programs.bash = {
     shellInit = ''
@@ -86,6 +116,7 @@ in
     interactiveShellInit = ''
       # Code to run for all interactive shells
       export PGDATABASE=stk_db
+      export PSQLRC=/etc/.psqlrc
       #alias ll='ls -la'
     '';
   };
