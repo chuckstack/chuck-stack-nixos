@@ -114,6 +114,7 @@ This section helps you connect to your newly created chuck-stack database. Here 
 
 - The database is configured to listen to unix socket connects from local users.
 - The stk-app.nix configuration creates a 'stk_superuser' in both the database and nixos.
+- This means that if a NixOS user is authenticated (stk_superuser for example) and the same user exists in the database, you can connect without a password.
 
 To connect to the database (assuming you starting from the nixos root user):
 
@@ -124,8 +125,10 @@ su - stk_superuser
 
 ```bash
 # > stk_superuser
-psql -d stk_db
+psql
 ```
+
+Note that you do not need to specify the database when calling `psql` because the ./nixos/stk-app.nix configuration sets the PGDATABASE='stk_db' environment variable for everyone.
 
 ## SSH Details
 
