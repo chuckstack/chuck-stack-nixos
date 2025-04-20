@@ -1,5 +1,8 @@
 { config, lib, pkgs, modulesPath, ... }:
 
+# Cloudflare tunnel configuration to expose a service behind a firewall
+# See details at the bottom of the file before using
+
 let
   # Import secrets from the file described in the readme
   secrets = import /etc/chuck-stack/secrets/keys.nix;
@@ -34,4 +37,5 @@ in {
 # Notes:
   # This configuration requires a secrets file at /etc/chuck-stack/secrets/keys.nix
   # The secrets file should contain: { cloudflaredToken = "your-actual-token"; }
+  # See this repo's readme.md for an example secrets file
   # See the project readme.md for instructions on setting up the secrets file with proper permissions

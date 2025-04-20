@@ -62,6 +62,7 @@
     jq
     pass
     ripgrep
+    bat
   ];
 
   # zram does NOT work in incus - DOES work in aws
