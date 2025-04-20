@@ -19,7 +19,7 @@ You can use the below files like a menu of services. Chose the options you wish 
 - nginx.nix - installs and configures nginx for publishing a static and providing a reverse proxy for PostgREST
 - [more...](./nixos/)
 
-## First Connection
+## First Thing to Do
 
 This section assumes you are connecting to a new NixOS instance. The below bash code snippet does the following:
 
@@ -40,7 +40,9 @@ exit # exit nix-shell
 ```
 ## Configuration.nix
 
-Here is an example configuration.nix file. Notice that I added the lines ending in '# here'.
+The chuck-stack-nix repository creates a nixos menu of services. You simply include the services you want in your /etc/nixos/configuration.nix file.
+
+Here is an example configuration.nix file. Notice the lines ending in '# here'. They represent the lines you might want to add to your configuration.
 
 ```nix
 ...
@@ -60,7 +62,7 @@ Here is an example configuration.nix file. Notice that I added the lines ending 
 ...
 ```
 
-### Actions Needed
+### NixOS Actions Needed
 
 Some of the services require configuration before using. Perform the following to quickly see all "# Action..." in all files:
 
@@ -85,7 +87,7 @@ nixos-rebuild switch
 ```
 If you exit from your session then reconnect, your bash session will be updated with all the new tools and features.
 
-## Examples
+## NixOS Examples
 
 Nix is both powerful and capable as well as complex. We have tried to be consistent in how we do things. One way to promote consistency is to highlight example of how to do things.
 
@@ -105,6 +107,25 @@ grep -rni -C10 "Example:.*keyword" /etc/nixos/chuck-stack-nix/nixos
 ```
 
 Note: -A10 shows the following (after) 10 lines
+
+## PostgreSQL psql Connection
+
+This section helps you connect to your newly created chuck-stack database. Here are important details to know:
+
+- The database is configured to listen to unix socket connects from local users.
+- The stk-app.nix configuration creates a 'stk_superuser' in both the database and nixos.
+
+To connect to the database (assuming you starting from the nixos root user):
+
+```bash
+# > root
+su - stk_superuser
+```
+
+```bash
+# > stk_superuser
+psql -d stk_db
+```
 
 ## SSH Details
 

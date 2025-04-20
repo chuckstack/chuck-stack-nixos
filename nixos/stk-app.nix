@@ -11,6 +11,7 @@
   # get list of requests through nginx via ip -- assumes self signed (insecure)
     # curl --insecure https://10.2.2.2/stk_request
 
+#TODO: need to update this file to better use variables (postgresPort, postgresUser, postgresDb, ...)
 let
   postgrestPort = 3000; # Example: variable
   postgresUser = "postgrest";
