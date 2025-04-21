@@ -76,7 +76,7 @@ Either option is valid.
 
 ### NixOS Actions Needed
 
-Some of the services require consideration an possibly configuration before using. Perform the following to quickly see all pending actions in all files:
+Some of the services require consideration and possibly configuration before using. Perform the following to quickly see all pending actions in all files:
 
 ```bash
 grep -rni -C10 "Action:" /etc/nixos/chuck-stack-nix/nixos
