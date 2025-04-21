@@ -6,7 +6,7 @@ For more information, go to the [chuck-stack](https://chuck-stack.org).
 
 ## Nix Configurations
 
-You can use the below files like a menu of services. Chose the options you wish to install on a given server using the below instructions.
+You can use the below files like a menu of services. Choose the options you wish to install on a given server using the below details.
 
 - system.nix - installs all the tools one might expect to manage a server.
 - postgresql.nix - installs PostgreSQL with minimal configuration
@@ -21,26 +21,27 @@ You can use the below files like a menu of services. Chose the options you wish 
 
 ## First Thing to Do
 
-This section assumes you are connecting to a new NixOS instance. The below bash code snippet does the following:
-
-1. install the tools to make your first changes to /etc/nixos/configuration.nix
-1. clones this repository in /etc/nixos/chuck-stack-nix/
-1. updates configuration.nix to include the appropriate nix configuration files
-1. exits out of the nix-shell so that when you nixos-rebuild, you get the latest tools.
-
-Note: since a new instance of NixOS has few tools installed by default, you can use nix-shell to temporarily install git, neovim and tmux (and anything else you wish to use temporarily).
+This section assumes you are connecting to a new NixOS instance.
 
 ```bash
-tmux # create a session that remains even if you get disconnected
+# nix-shell: temporarily install tools and create sub-shell so you can change configuration.nix
 nix-shell --packages git neovim tmux
+# tmux: (optional) use tmux to create a session that remains even if you get disconnected
 cd /etc/nixos/
+# git: you can create a fork and clone your own copy if desired
 git clone https://github.com/chuckstack/chuck-stack-nix.git
 nvim configuration.nix #make below changes
-exit # exit nix-shell
 ```
+
+Notes:
+
+- You can use nix-shell to temporarily create a sub-shell and install git, neovim and tmux (and anything else you wish to use).
+- You can exit from the nix-shell sub-shell at any time.
+- These tools will no long be available when you exit from the sub-shell.
+
 ## Configuration.nix
 
-The chuck-stack-nix repository creates a nixos menu of services. You simply include the services you want in your /etc/nixos/configuration.nix file.
+You simply include the services you want in your /etc/nixos/configuration.nix file.
 
 Here is an example configuration.nix file. Notice the lines ending in '# here'. They represent the lines you might want to add to your configuration.
 
@@ -62,9 +63,22 @@ Here is an example configuration.nix file. Notice the lines ending in '# here'. 
 ...
 ```
 
+### Changes to chuck-stack Configurations
+
+Use your preferred git best practice to manage changes to the nix confirmation files. The purpose of this section is to discuss options for how to manage your changes. 
+
+You are welcome to fork the chuck-stack-nix repository and use that repository above instead. Doing so has the following benefits:
+
+- You can privately track your changes in your github account.
+- You can easily compare your changes against the current version of chuck-stack-nix.
+
+Another option to simply copy the newly cloned /etc/nixos/chuck-stack-nix/ directory to a version you track yourself.
+
+Either option is valid.
+
 ### NixOS Actions Needed
 
-Some of the services require configuration before using. Perform the following to quickly see all "# Action..." in all files:
+Some of the services require consideration an possibly configuration before using. Perform the following to quickly see all pending actions in all files:
 
 ```bash
 grep -rni -C10 "Action:" /etc/nixos/chuck-stack-nix/nixos
@@ -73,11 +87,11 @@ grep -rni -C10 "Action:" /etc/nixos/chuck-stack-nix/nixos
 To look for a specific action with a specific keyword somewhere in the same line:
 
 ```bash
-grep -rni -C10 "Action:.*keyword" /etc/nixos/chuck-stack-nix/nixos
+grep -rni -C10 "Action:.*your-keyword" /etc/nixos/chuck-stack-nix/nixos
 
 ```
 
-Note: -C10 shows the previous and following 10 lines
+Note: -C10 shows the previous and following 10 lines around the action.
 
 ### Rebuild
 
@@ -85,13 +99,13 @@ To rebuild with the new configuration:
 ```
 nixos-rebuild switch
 ```
-If you exit from your session then reconnect, your bash session will be updated with all the new tools and features.
+If you completely exit from your session then reconnect, your bash session will be updated with all the new tools and features.
 
 ## NixOS Examples
 
-Nix is both powerful and capable as well as complex. We have tried to be consistent in how we do things. One way to promote consistency is to highlight example of how to do things.
+Nix is both powerful and capable as well as complex. We have tried to be consistent in how we do things. One way to promote consistency is to highlight examples of how to do things.
 
-When looking for examples, always start in ./chuck-stack-nix/nixos/system.nix. It represents the most basic starting place to configure your system.
+When looking for examples, always start looking in system.nix. It represents the most basic starting place to configure your system.
 
 Perform the following to quickly see all "# Example..." in all files:
 
@@ -102,7 +116,7 @@ grep -rni -A10 "Example:" /etc/nixos/chuck-stack-nix/nixos
 To look for a specific example with a specific keyword somewhere in the same line:
 
 ```bash
-grep -rni -C10 "Example:.*keyword" /etc/nixos/chuck-stack-nix/nixos
+grep -rni -C10 "Example:.*your-keyword" /etc/nixos/chuck-stack-nix/nixos
 
 ```
 
@@ -121,20 +135,17 @@ To connect to the database (assuming you starting from the nixos root user):
 ```bash
 # > root
 su - stk_superuser
-```
-
-```bash
 # > stk_superuser
 psql
 ```
 
-Note that you do not need to specify the database when calling `psql` because the ./nixos/stk-app.nix configuration sets the PGDATABASE='stk_db' environment variable for everyone.
+Note that you do not need to specify the database when calling `psql` because the <./nixos/stk-app.nix> configuration sets the PGDATABASE='stk_db' environment variable for everyone.
 
 ## SSH Details
 
 SSH is disabled by default in system.nix. Uncomment the system.nix => services.openssh section if you wish to enable it. The reasons it is disabled by default are:
 
-- It is safer to assume you do not want it enabled and open.
+- It is safer to assume you do not want it.
 - The NixOS default behavior is to open the ssh port firewall port when the ssh service is enagbled. To prevent this, you must explicitly disable the port in the system.nix => networking.firewall section.
 - The Incus command `incus exec instance-name bash` does not use ssh to connect; therefore, you can connect from Incus without needing the sshd services enabled.
 
