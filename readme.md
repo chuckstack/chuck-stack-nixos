@@ -1,8 +1,6 @@
 # chuck-stack-nix
 
-The purpose of this repository is to provide nixos configuration files to quickly assemble a working chuck-stack.
-
-For more information, go to the [chuck-stack](https://chuck-stack.org).
+The purpose of this repository is to provide nixos configuration files to quickly assemble a working [chuck-stack](https://chuck-stack.org).
 
 ## Nix Configurations
 
