@@ -12,9 +12,10 @@ You can use the below files like a menu of services. Choose the options you wish
 - stk-app.nix - represents the most simple version of a chuck-stack application
   - configures PostgreSQL to contain a specific database
   - creates a service to run [migrations](https://github.com/chuckstack/stk-app-sql)
-  - creates a PostgREST user named: postgrest
+  - creates a PostgREST system user named 'postgrest'
   - configures PostgREST and runs it as a service
-- nginx.nix - installs and configures nginx for publishing a static and providing a reverse proxy for PostgREST
+  - creates a 'stk_superuser' to perform database administration
+- nginx.nix - installs and configures nginx for publishing a static site and providing a reverse proxy for PostgREST
 - [more...](./nixos/)
 
 ## First Thing to Do
