@@ -101,9 +101,9 @@ If you completely exit from your session then reconnect, your bash session will 
 
 ## NixOS Examples
 
-Nix is both powerful and capable as well as complex. We have tried to be consistent in how we do things. One way to promote consistency is to highlight examples of how to do things.
+Nix is powerful, capable as well as complex. We have tried to be consistent and adopt best practices in how we do things. One way to promote consistency is to highlight examples of something is done. Do not hesitate to offer suggestions!
 
-When looking for examples, always start looking in system.nix. It represents the most basic starting place to configure your system.
+When looking for examples, start in system.nix. It represents the starting place to configure your system.
 
 Perform the following to quickly see all "# Example..." in all files:
 
