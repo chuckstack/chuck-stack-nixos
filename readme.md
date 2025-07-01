@@ -1,4 +1,4 @@
-# chuck-stack-nix
+# chuck-stack-nixos
 
 The purpose of this repository is to provide nixos configuration files to quickly assemble a working [chuck-stack](https://chuck-stack.org).
 
