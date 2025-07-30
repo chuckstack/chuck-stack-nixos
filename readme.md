@@ -9,9 +9,10 @@ You can use the below files like a menu of services. Choose the options you wish
 - system.nix - installs all the tools one might expect to manage a server.
 - postgresql.nix - installs PostgreSQL with minimal configuration
 - user.nix - provides example 'real' and 'system' users
-- stk-app.nix - represents the most simple version of a chuck-stack application
+- stk-core.nix - represents the most simple version of a chuck-stack application
   - configures PostgreSQL to contain a specific database
-  - creates a service to run [migrations](https://github.com/chuckstack/stk-app-sql)
+  - creates a service to run migrations from [chuck-stack-core](https://github.com/chuckstack/chuck-stack-core) using [chuck-stack-nushell-psql-migration](https://github.com/chuckstack/chuck-stack-nushell-psql-migration)
+  - installs pg_jsonschema extension for PostgreSQL 17
   - creates a PostgREST system user named 'postgrest'
   - configures PostgREST and runs it as a service
   - creates a 'stk_superuser' to perform database administration
@@ -54,7 +55,7 @@ Here is an example configuration.nix file. Notice the lines ending in '# here'. 
     ./chuck-stack-nixos/nixos/system.nix  # here
     ./chuck-stack-nixos/nixos/postgresql.nix  # here
     ./chuck-stack-nixos/nixos/user.nix  # here
-    ./chuck-stack-nixos/nixos/stk-app.nix  # here
+    ./chuck-stack-nixos/nixos/stk-core.nix  # here
     ./chuck-stack-nixos/nixos/nginx.nix  # here
     #./chuck-stack-nixos/nixos/nginx-fail2ban.nix  # here if needed
     #./chuck-stack-nixos/nixos/cloudflared.nix # here if needed
@@ -126,7 +127,7 @@ Note: -A10 shows the following (after) 10 lines
 This section helps you connect to your newly created chuck-stack database. Here are important details to know:
 
 - The database is configured to listen to unix socket connects from local users.
-- The stk-app.nix configuration creates a 'stk_superuser' in both the database and nixos.
+- The stk-core.nix configuration creates a 'stk_superuser' in both the database and nixos.
 - This means that if a NixOS user is authenticated (stk_superuser for example) and the same user exists in the database, you can connect without a password.
 
 To connect to the database (assuming you starting from the nixos root user):
@@ -138,7 +139,22 @@ su - stk_superuser
 psql
 ```
 
-Note that you do not need to specify the database when calling `psql` because the <./nixos/stk-app.nix> configuration sets the PGDATABASE='stk_db' environment variable for everyone.
+Note that you do not need to specify the database when calling `psql` because the <./nixos/stk-core.nix> configuration sets the PGDATABASE='stk_db' environment variable for everyone.
+
+## Database Migrations
+
+The stk-core.nix configuration uses [chuck-stack-nushell-psql-migration](https://github.com/chuckstack/chuck-stack-nushell-psql-migration) to manage database migrations. Migrations are sourced from the [chuck-stack-core](https://github.com/chuckstack/chuck-stack-core) repository.
+
+To re-run migrations:
+```bash
+sudo systemctl restart stk-db-migrations
+sudo systemctl status stk-db-migrations
+```
+
+To view migration logs:
+```bash
+sudo journalctl -u stk-db-migrations -n 50
+```
 
 ## SSH Details
 

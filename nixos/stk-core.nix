@@ -101,6 +101,8 @@ in
       CREATE ROLE stk_superuser LOGIN CREATEROLE; 
       COMMENT ON ROLE stk_superuser IS 'superuser role to administer the stk_db database';
       CREATE DATABASE stk_db OWNER stk_superuser;
+      \c stk_db
+      CREATE EXTENSION IF NOT EXISTS pg_jsonschema;
     '';
   };
 
