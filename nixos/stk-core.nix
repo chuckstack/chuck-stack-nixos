@@ -102,7 +102,7 @@ in
   services.postgresql = {
     # Note: this section needs stay in sync with chuck-stack-core => test => shell.nix
     # Add pg_jsonschema extension to PostgreSQL
-    extraPlugins = [ pg_jsonschema_ext ];
+    extensions = [ pg_jsonschema_ext ];
     # Example: of a sql script that is only run once
     initialScript = pkgs.writeText "stk-init.sql" ''
       CREATE ROLE stk_superuser LOGIN CREATEROLE; 
