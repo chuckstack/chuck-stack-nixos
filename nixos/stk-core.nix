@@ -28,6 +28,25 @@ let
     sha256 = "sha256-EL6GEZ3uvBsnR8170SBY+arVfUsLXPVxKPEOqIVgedA=";
   };
   
+  # Fetch chuck-stack-core for pg_jsonschema extension files
+  # Using fetchTarball temporarily to avoid hash issues during testing
+  # For production, use fetchgit with a pinned revision and correct hash
+  chuckStackCoreSrc = pkgs.fetchTarball {
+    url = "https://github.com/chuckstack/chuck-stack-core/archive/main.tar.gz";
+  };
+  
+  # Create pg_jsonschema extension package for PostgreSQL 17
+  pg_jsonschema_ext = pkgs.stdenv.mkDerivation {
+    name = "pg_jsonschema-extension";
+    src = "${chuckStackCoreSrc}/test/pg_extension/17";
+    installPhase = ''
+      mkdir -p $out/lib $out/share/postgresql/extension
+      cp pg_jsonschema.so $out/lib/
+      cp pg_jsonschema.control $out/share/postgresql/extension/
+      cp pg_jsonschema--0.3.3.sql $out/share/postgresql/extension/
+    '';
+  };
+  
   
   # Example: bash/bin script for service
   run-migrations = pkgs.writeScriptBin "run-migrations" ''
@@ -82,6 +101,8 @@ in
   # PostgreSQL configuration
   services.postgresql = {
     # Note: this section needs stay in sync with chuck-stack-core => test => shell.nix
+    # Add pg_jsonschema extension to PostgreSQL
+    extraPlugins = [ pg_jsonschema_ext ];
     # Example: of a sql script that is only run once
     initialScript = pkgs.writeText "stk-init.sql" ''
       CREATE ROLE stk_superuser LOGIN CREATEROLE; 
