@@ -31,7 +31,7 @@ let
   # Fetch chuck-stack-core for pg_jsonschema extension files
   # Using fetchTarball temporarily to avoid hash issues during testing
   # For production, use fetchgit with a pinned revision and correct hash
-  chuckStackCoreSrc = pkgs.fetchTarball {
+  chuckStackCoreSrc = fetchTarball {
     url = "https://github.com/chuckstack/chuck-stack-core/archive/main.tar.gz";
   };
   
