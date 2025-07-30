@@ -79,6 +79,9 @@ let
     # Change to chuck-stack-core directory
     cd "$CHUCK_STACK_CORE_PATH"
 
+    # Ensure PostgreSQL tools are in PATH
+    export PATH="${pkgs.postgresql}/bin:$PATH"
+    
     # Run the migrations using nushell (migrations are in ./migrations subdirectory)
     ${pkgs.nushell}/bin/nu -c "use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations"
 
