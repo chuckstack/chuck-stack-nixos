@@ -25,10 +25,10 @@ let
   };
   
   # Fetch chuck-stack-core for pg_jsonschema extension files
-  chuckStackCoreSrc = pkgs.fetchgit {
-    url = "https://github.com/chuckstack/chuck-stack-core";
-    rev = "HEAD"; # You should pin this to a specific commit
-    sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # Replace with actual hash
+  # Using fetchTarball temporarily to avoid hash issues during testing
+  # For production, use fetchgit with a pinned revision and correct hash
+  chuckStackCoreSrc = pkgs.fetchTarball {
+    url = "https://github.com/chuckstack/chuck-stack-core/archive/main.tar.gz";
   };
   
   # Create pg_jsonschema extension package
@@ -50,6 +50,11 @@ let
   postgresql-with-jsonschema = pkgs.buildEnv {
     name = "postgresql-with-jsonschema";
     paths = [ pkgs.postgresql pg_jsonschema_ext ];
+    passthru = {
+      # Pass through required attributes from the base PostgreSQL package
+      psqlSchema = pkgs.postgresql.psqlSchema;
+      version = pkgs.postgresql.version;
+    };
   };
   
   # Example: bash/bin script for service
