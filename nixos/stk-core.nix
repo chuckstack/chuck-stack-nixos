@@ -117,11 +117,12 @@ in
       Type = "oneshot";
       User = "stk_superuser";
       ExecStart = "${run-migrations}/bin/run-migrations";
-      # Add environment variables that might be needed
+      # PostgreSQL connection variables (equivalent to what was in DATABASE_URL)
       Environment = [
         "PGHOST=/run/postgresql"
         "PGUSER=stk_superuser"
         "PGDATABASE=${postgresDb}"
+        "PSQLRC=/dev/null"  # Disable .psqlrc during migrations to avoid role errors
       ];
     };
   };
