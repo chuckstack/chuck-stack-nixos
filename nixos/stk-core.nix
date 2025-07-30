@@ -1,5 +1,9 @@
 { config, lib, pkgs, modulesPath, ... }:
 
+# stk-core.nix - Chuck-stack core configuration using chuck-stack-nushell-psql-migration
+# This replaces the old stk-app.nix which used sqlx-cli
+# Migrations are now sourced from chuck-stack-core repository
+
 # Notes:
   # discussed in https://www.chuck-stack.org/ls/stack-architecture.html
   # get list of requests via api from localhost:
