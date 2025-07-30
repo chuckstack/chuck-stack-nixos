@@ -24,38 +24,6 @@ let
     sha256 = "sha256-EL6GEZ3uvBsnR8170SBY+arVfUsLXPVxKPEOqIVgedA=";
   };
   
-  # Fetch chuck-stack-core for pg_jsonschema extension files
-  # Using fetchTarball temporarily to avoid hash issues during testing
-  # For production, use fetchgit with a pinned revision and correct hash
-  chuckStackCoreSrc = pkgs.fetchTarball {
-    url = "https://github.com/chuckstack/chuck-stack-core/archive/main.tar.gz";
-  };
-  
-  # Create pg_jsonschema extension package
-  # This is needed for chuck-stack's JSON schema validation
-  # Note: The extension files in /test/pg_extension/17 are for PostgreSQL 17
-  # If using a different PostgreSQL version, you may need different extension files
-  pg_jsonschema_ext = pkgs.stdenv.mkDerivation {
-    name = "pg_jsonschema-extension";
-    src = "${chuckStackCoreSrc}/test/pg_extension/17";
-    installPhase = ''
-      mkdir -p $out/lib $out/share/postgresql/extension
-      cp pg_jsonschema.so $out/lib/
-      cp pg_jsonschema.control $out/share/postgresql/extension/
-      cp pg_jsonschema--0.3.3.sql $out/share/postgresql/extension/
-    '';
-  };
-  
-  # Combine PostgreSQL with extension using buildEnv
-  postgresql-with-jsonschema = pkgs.buildEnv {
-    name = "postgresql-with-jsonschema";
-    paths = [ pkgs.postgresql pg_jsonschema_ext ];
-    passthru = {
-      # Pass through required attributes from the base PostgreSQL package
-      psqlSchema = pkgs.postgresql.psqlSchema;
-      version = pkgs.postgresql.version;
-    };
-  };
   
   # Example: bash/bin script for service
   run-migrations = pkgs.writeScriptBin "run-migrations" ''
@@ -89,7 +57,17 @@ let
     cd "$CHUCK_STACK_CORE_PATH"
 
     # Run the migrations using nushell (migrations are in ./migrations subdirectory)
-    ${pkgs.nushell}/bin/nu -c "use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations"
+    # TODO: Uncomment once pg_jsonschema extension is installed
+    # ${pkgs.nushell}/bin/nu -c "use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations"
+    
+    # For now, just show that we can access everything
+    echo "Migration utility available at: $MIGRATION_UTIL_PATH"
+    echo "Migrations located at: $CHUCK_STACK_CORE_PATH/migrations"
+    echo "Would run: nu -c 'use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations'"
+    
+    # List migration files to confirm clone worked
+    echo "Available migrations:"
+    ls -la "$CHUCK_STACK_CORE_PATH/migrations/" | head -10
 
     # Clean up
     cd /
@@ -100,7 +78,6 @@ in
   # PostgreSQL configuration
   services.postgresql = {
     # Note: this section needs stay in sync with chuck-stack-core => test => shell.nix
-    package = postgresql-with-jsonschema;
     # Example: of a sql script that is only run once
     initialScript = pkgs.writeText "stk-init.sql" ''
       CREATE ROLE stk_superuser LOGIN CREATEROLE; 
