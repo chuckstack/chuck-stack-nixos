@@ -80,17 +80,7 @@ let
     cd "$CHUCK_STACK_CORE_PATH"
 
     # Run the migrations using nushell (migrations are in ./migrations subdirectory)
-    # TODO: Uncomment once pg_jsonschema extension is installed
-    # ${pkgs.nushell}/bin/nu -c "use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations"
-    
-    # For now, just show that we can access everything
-    echo "Migration utility available at: $MIGRATION_UTIL_PATH"
-    echo "Migrations located at: $CHUCK_STACK_CORE_PATH/migrations"
-    echo "Would run: nu -c 'use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations'"
-    
-    # List migration files to confirm clone worked
-    echo "Available migrations:"
-    ls -la "$CHUCK_STACK_CORE_PATH/migrations/" | head -10
+    ${pkgs.nushell}/bin/nu -c "use $MIGRATION_UTIL_PATH/mod.nu *; migrate run ./migrations"
 
     # Clean up
     cd /
