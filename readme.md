@@ -24,13 +24,18 @@ You can use the below files like a menu of services. Choose the options you wish
 This section assumes you are connecting to a new NixOS instance.
 
 ```bash
+sudo nix-channel --update
+sudo nixos-rebuild switch
 # nix-shell: temporarily install tools and create sub-shell so you can change configuration.nix
-nix-shell --packages git neovim tmux
+sudo nix-shell --packages wget git neovim tmux
+https://raw.githubusercontent.com/chuboe/chuboe-system-configurator/refs/heads/main/.inputrc
 # tmux: (optional) use tmux to create a session that remains even if you get disconnected
 cd /etc/nixos/
 # git: you can create a fork and clone your own copy if desired
 git clone https://github.com/chuckstack/chuck-stack-nixos.git
 nvim configuration.nix #make below changes
+# update the configuration.nix as described below
+sudo nixos-rebuild switch
 ```
 
 Notes:
