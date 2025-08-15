@@ -24,8 +24,8 @@ let
   # Fetch chuck-stack-nushell-psql-migration source
   migrationUtilSrc = pkgs.fetchgit {
     url = "https://github.com/chuckstack/chuck-stack-nushell-psql-migration";
-    rev = "e67c7c8e5ed411314396585f53106ef51868ac00";  # suppressed migration table not found error
-    sha256 = "sha256-EL6GEZ3uvBsnR8170SBY+arVfUsLXPVxKPEOqIVgedA=";
+    rev = "e309c1ac019cf7afeb549eebb6367215aaf471cb";
+    sha256 = "sha256-zYB1TcPQY3hK7MR/OyCi2xwpahdjbOc2+F0Qn6L+zCY=";
   };
   
   # Fetch chuck-stack-core for pg_jsonschema extension files
